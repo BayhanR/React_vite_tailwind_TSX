@@ -1,0 +1,64 @@
+  function generateRandomPassword(length = 12) {
+    const charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;:',.<>?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
+    return password;
+  }
+  function resetPass(email: string): boolean {
+    // E-posta adresinin geçerliliğini kontrol et
+    if (!emailRegex.test(email)) {
+        setError('Lütfen geçerli bir email adresi girin.');
+        setShowError(true);
+        return false;
+    }
+    // E-posta adresini bulun
+    const emailIndex = emails.findIndex(e => e === email);
+    if (emailIndex !== -1) {
+        // E-posta adresi mevcutsa, şifreyi değiştir
+        passwords[emailIndex] = generateRandomPassword();
+        console.log('Şifre değişti');
+        setShowError(false);
+        setSuccess('Yeni şifreniz mail yoluyla iletildi');
+        setShowSuccess(true);
+        return true;
+    } else {
+        // E-posta adresi bulunamadıysa hata mesajı göster
+        setError('E-posta adresi bulunamadı.');
+        setShowError(true);
+        return false;
+    }
+}
+
+const handleSent = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    if (!email) {
+        // E-posta adresi girilmemişse uyarı göster
+        setError('Lütfen e-posta adresinizi girin.');
+        setShowError(true);
+        return;
+    }
+
+    if (!resetPass(email)) {
+        // resetPass fonksiyonu false dönerse uyarı göster
+        console.log('Olumsuz durum');
+        return; // Hata mesajı zaten setError içinde ayarlandığı için buraya tekrar setError çağırmanıza gerek yok
+    }
+
+    setTimeout(() => {
+        // Şifremi Unuttum veya Kayıt Ol ekranlarını kapat
+
+        // Giriş ekranını aç
+        setShowLogin(true);
+        setLoginOpacity(0); // Giriş ekranını görünür yapmak için ilk başta 0 yapalım
+        // Görünür hale gelmek için animasyonu başlat
+        setForgotPassword(false);
+        setTimeout(() => {
+            setLoginOpacity(1); // Giriş ekranı nın opaklığını 1 yaparak görünür hale getir
+        }, 100);
+        // Küçük bir gecikme ile animasyonu başlat
+    }, 100);
+};
